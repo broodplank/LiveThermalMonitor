@@ -7,7 +7,7 @@ export INTERVAL="1"; #Set interval between temperature measurement, default is 1
 export TIMESTAMP="1"; #Enable or disable timestamp print at every temperature measured
 export CPUFREQ="1"; #Enable or disable printing current CPU frequency at every temperature measured
 export TEMPOUT="/sdcard/tempdata"; #Set output file
-export METRIC="0"; #Use metric system (celcius) or imperial system (fahrenheit)
+export METRIC="1"; #Use metric system (celcius) or imperial system (fahrenheit)
 
 while true
 do
@@ -30,8 +30,8 @@ do
 	else
 		#Print value of thermal_zone0, this is expressed in fahrenheit
 		export CELCIUSREADING=`cat /sys/class/thermal/thermal_zone0/temp | grep "\n*"`;
-	    	export FAHRENHEITMULTIPLIER=`echo "${CELCIUSREADING} 1.8 * p" |dc`;
-	    	export FAHRENHEIT=`echo "${FAHRENHEITMULTIPLIER} 32 + p" |dc`;
+		export FAHRENHEITMULTIPLIER=`echo "${CELCIUSREADING} 1.8 * p" |dc`;
+		export FAHRENHEIT=`echo "${FAHRENHEITMULTIPLIER} 32 + p" |dc`;
 		echo -e "Degrees Fahrenheit: $FAHRENHEIT\n" >> $TEMPOUT
 	fi;
 
