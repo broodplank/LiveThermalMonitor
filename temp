@@ -1,0 +1,33 @@
+#!/system/bin/sh
+
+#Live temperature monitor v1.0
+#by broodplank
+
+
+export INTERVAL="1"; #Set interval between temperature measurement, default is 1 second
+export TIMESTAMP="1"; #Enable or disable timestamp print at every temperature measured
+export CPUFREQ="1"; #Enable or disable printing current CPU frequency at every temperature measured
+export TEMPOUT="/sdcard/tempdata"; #Set output file
+
+while true
+do
+	#Check for timestamp usage
+	if [[ ${TIMESTAMP} = 1 ]]; then
+		#Print hh:mm:ss
+		echo -e "Timestamp: "`date +"%T"` >> $TEMPOUT
+	fi;
+
+	#Check for cpufreq usage
+	if [[ ${CPUFREQ} = 1 ]]; then
+		#Print current cpufreq of cpu0 
+		echo -e "Current CPU Freq: "`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq` >> $TEMPOUT
+	fi;
+
+	#Print value of thermal_zone0, this is expressed in celcius
+	echo -e "Degrees Celcius: "`cat /sys/class/thermal/thermal_zone0/temp | grep "\n*"`"\n" >> $TEMPOUT
+
+	#Execute interval 
+	busybox sleep ${INTERVAL}s
+
+done
+
