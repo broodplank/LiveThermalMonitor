@@ -1,0 +1,84 @@
+#!/bin/bash
+
+#TempMan
+#For installing and using TempMon
+#by broodplank
+
+while :
+do
+	clear
+	echo "********************************"
+	echo "* - Linux helper for TempMon - *"
+	echo "* -- www.broodplank.net      - *"
+	echo "********************************"
+	echo
+	echo "- What would you like to do?"
+	echo " [i] Install ADB to PC"
+	echo 
+	echo " [1] Install TempMon to device"							  
+	echo " [2] Start a new reading"
+	echo " [3] Cleanup temp files on device"
+	echo " [4] Exit"
+	echo
+	echo -n "Enter option: "
+	read opt
+
+  
+  if [ "$?" != "4" ]
+  then
+    case $opt in
+      1) clear;
+       echo "Installing..";
+       adb -d wait-for-device
+       echo "Mounting system";
+       adb -d remount;
+       echo "Pushing file to /system/etc";
+       adb -d push ${PWD}/../../tempmon /system/etc/tempmon;
+       echo "Setting mode to 755 (RWX-RX-RX)";
+       adb -d shell chmod 755 /system/etc/tempmon;
+       echo "Done!";
+       echo;
+       continue;;
+
+      2) clear;
+
+      echo "Starting TempMon on device...";
+      adb -d wait-for-device
+      adb -d shell "echo ' ' > /sdcard/tempdata"
+      adb -d shell "/system/etc/tempmon & tail -f /sdcard/tempdata"
+      echo -n "Do you want to pull the result to your PC? [Y/n]: ";
+      read pull;
+      if [[ $pull != "n" ]]; then
+      	export FILENAME=`date -u +"%H%M%S"-Thermal-Reading`;
+      	echo $FILENAME
+      	adb -d pull "/sdcard/tempdata ${PWD}/${FILENAME}"
+  	  fi;
+      continue;;
+
+      3) echo "Cleaning up remains...";
+      adb -d wait-for-device
+      adb -d remount;
+      adb -d shell "rm /sdcard/tempdata";
+      continue;;
+
+	  4) echo "Exiting";
+	  exit;;
+
+	  i) echo "Installing ADB"
+	  sudo add-apt-repository ppa:nilarimogard/webupd8 -y;
+	  sudo apt-get update;
+	  sudo apt-get install android-tools-adb -y;
+	  echo "Done!"
+	  echo
+	  echo "Installing ADB Drivers"
+	  wget http://www.broodplank.net/51-android.rules
+	  sudo mv -f 51-android.rules /etc/udev/rules.d/51-android.rules
+	  sudo chmod 644 /etc/udev/rules.d/51-android.rules
+	  echo "Done!"
+	  continue;;
+
+      *) echo "Invalid option"; continue;;
+    esac
+  fi
+
+done

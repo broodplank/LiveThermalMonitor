@@ -3,8 +3,8 @@
 #Live temperature monitor v1.1
 #by broodplank
 
-export INTERVAL="1"; #Set interval between temperature measurement, default is 1 second
-export TIMESTAMP="1"; #Enable or disable timestamp print at every temperature measured
+export INTERVAL="2"; #Set interval between temperature measurement, default is 1 second
+export TIMESTAMP="0"; #Enable or disable timestamp print at every temperature measured
 export CPUFREQ="1"; #Enable or disable printing current CPU frequency at every temperature measured
 export TEMPOUT="/sdcard/tempdata"; #Set output file
 export METRIC="1"; #Use metric system (celcius) or imperial system (fahrenheit)
